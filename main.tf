@@ -135,4 +135,4 @@ resource "google_project_iam_member" "composer" {
   project  = data.google_project.project.project_id
   role     = each.value.role
   member   = each.value.member
-}
+} 
