@@ -9,4 +9,4 @@ keyring = "keyring-example-03"
 keyname = "crypto-key-example-01"
 sa      = "composer-test-sa-01"
 composer_name = "composer-02"
-access_token=""
+
