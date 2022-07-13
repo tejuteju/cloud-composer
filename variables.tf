@@ -27,8 +27,3 @@ variable "sa" {
 variable "composer_name" {
   type=string
 }
-/*variable "access_token" {
-  description = "access_token"
-  type        = string
-  sensitive   = true
-}*/
