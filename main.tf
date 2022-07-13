@@ -1,7 +1,7 @@
 provider "google" {
   project = var.project
   region  = "us-central1"
-  access_token          = var.access_token
+  //access_token          = var.access_token
 }
 data "google_project" "project" {
 }
