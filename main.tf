@@ -1,6 +1,7 @@
 provider "google" {
   project = var.project
   region  = "us-central1"
+  access_token          = var.access_token
 }
 data "google_project" "project" {
 }
@@ -78,7 +79,7 @@ resource "google_kms_crypto_key" "key" {
 resource "google_service_account" "composer-sa" {
   account_id   = var.sa
   display_name = "Test Service Account for Composer Environment"
-  project      = data.google_project.project.project_id
+  project      = var.project
 }
 
 resource "google_kms_crypto_key_iam_member" "crypto_key" {
@@ -87,12 +88,12 @@ resource "google_kms_crypto_key_iam_member" "crypto_key" {
   member        = "serviceAccount:${google_service_account.composer-sa.email}"
 }
 resource "google_project_iam_member" "composer_sa_environments_worker" {
-  project = data.google_project.project.project_id
+  project = var.project
   role    = "roles/composer.worker"
   member  = "serviceAccount:${google_service_account.composer-sa.email}"
 }
 resource "google_project_iam_member" "composer_sa_environments_sa_user" {
-  project = data.google_project.project.project_id
+  project = var.project
   role    = "roles/iam.serviceAccountUser"
   member  = "serviceAccount:${google_service_account.composer-sa.email}"
 }
