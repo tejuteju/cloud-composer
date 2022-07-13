@@ -92,6 +92,11 @@ resource "google_project_iam_member" "composer_sa_environments_worker" {
   role    = "roles/composer.worker"
   member  = "serviceAccount:${google_service_account.composer-sa.email}"
 }
+resource "google_project_iam_member" "composer_sa_environments_admin" {
+  project = var.project
+  role    = "roles/composer.admin"
+  member  = "serviceAccount:${google_service_account.composer-sa.email}"
+}
 resource "google_project_iam_member" "composer_sa_environments_sa_user" {
   project = var.project
   role    = "roles/iam.serviceAccountUser"
@@ -99,26 +104,26 @@ resource "google_project_iam_member" "composer_sa_environments_sa_user" {
 }
 
 data "google_storage_project_service_account" "gcs_account" {
-  project = data.google_project.project.project_id
+  project = var.project
 }
 resource "google_project_service_identity" "artifactregistry_identity" {
   provider = google-beta
-  project  = data.google_project.project.project_id
+  project  = var.project
   service  = "artifactregistry.googleapis.com"
 }
 
 locals {
   kms_decrypter_users = [
-    "serviceAccount:service-61126541866@cloudcomposer-accounts.iam.gserviceaccount.com",
-    "serviceAccount:service-61126541866@container-engine-robot.iam.gserviceaccount.com",
-    "serviceAccount:service-61126541866@compute-system.iam.gserviceaccount.com",
-    "serviceAccount:service-61126541866@gcp-sa-artifactregistry.iam.gserviceaccount.com",
-    "serviceAccount:service-61126541866@gcp-sa-pubsub.iam.gserviceaccount.com",
+    "serviceAccount:service-${data.google_project.project.number}@cloudcomposer-accounts.iam.gserviceaccount.com",
+    "serviceAccount:service-${data.google_project.project.number}@container-engine-robot.iam.gserviceaccount.com",
+    "serviceAccount:service-${data.google_project.project.number}@compute-system.iam.gserviceaccount.com",
+    "serviceAccount:service-${data.google_project.project.number}@gcp-sa-artifactregistry.iam.gserviceaccount.com",
+    "serviceAccount:service-${data.google_project.project.number}@gcp-sa-pubsub.iam.gserviceaccount.com",
     "serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"
   ]
   composer_bindings = {
     "composer_service_agent" = {
-      member = "serviceAccount:service-61126541866@cloudcomposer-accounts.iam.gserviceaccount.com"
+      member = "serviceAccount:service-${data.google_project.project.number}@cloudcomposer-accounts.iam.gserviceaccount.com"
       role   = "roles/composer.ServiceAgentV2Ext"
     }
   }
@@ -135,4 +140,4 @@ resource "google_project_iam_member" "composer" {
   project  = data.google_project.project.project_id
   role     = each.value.role
   member   = each.value.member
-} 
+}
